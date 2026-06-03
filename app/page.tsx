@@ -464,19 +464,7 @@ function quickAddQuest(name: string, stat: StatKey, xp: number) {
           </div>
         </div>
 
-      {/* QUEST TEMPLATES */}
-      <div className="bg-zinc-900 p-6 rounded-2xl mb-6">
-        <h2 className="text-2xl font-semibold mb-4 text-cyan-300">
-          Quest Templates
-        </h2>
-
-        <button
-          onClick={applyEngineeringDayTemplate}
-          className={`w-full ${theme.buttonBg} p-3 rounded-xl transition-colors ${theme.buttonHover} font-semibold`}
-        >
-          Engineering Day
-        </button>
-      </div>
+      
 
       {/* QUICK ADD */}
       <div className="bg-zinc-900 p-6 rounded-2xl mb-6">
@@ -493,10 +481,10 @@ function quickAddQuest(name: string, stat: StatKey, xp: number) {
           </button>
 
           <button
-            onClick={() => quickAddQuest("Team Meeting", "DISC", 20)}
+            onClick={() => quickAddQuest("Meeting", "DISC", 20)}
             className={`${theme.buttonBg} p-3 rounded-xl transition-colors ${theme.buttonHover} font-semibold text-sm`}
           >
-            Team Meeting
+            Meeting
           </button>
 
           <button
@@ -507,10 +495,10 @@ function quickAddQuest(name: string, stat: StatKey, xp: number) {
           </button>
 
           <button
-            onClick={() => quickAddQuest("Workout", "STR", 20)}
+            onClick={() => quickAddQuest("Training", "STR", 20)}
             className={`${theme.buttonBg} p-3 rounded-xl transition-colors ${theme.buttonHover} font-semibold text-sm`}
           >
-            Workout
+            Training
           </button>
         </div>
       </div>
