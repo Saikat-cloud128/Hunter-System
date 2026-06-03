@@ -182,7 +182,6 @@ export default function Home() {
 
   useEffect(() => {
     const today = new Date().toISOString().split("T")[0];
-    const savedQuests = localStorage.getItem("quests");
     const savedXp = localStorage.getItem("xp");
     const savedStats = localStorage.getItem("stats");
     const savedStreak = localStorage.getItem("streak");
@@ -193,20 +192,24 @@ export default function Home() {
     let initialStreak = savedStreak ? Number(savedStreak) : 0;
     let initialLastCompleted = savedLastCompletedDate || "";
 
-    if (savedQuests) {
-      initialQuests = JSON.parse(savedQuests);
-    }
-
+    // Daily Reset: Clear all quests at the start of a new day
     if (savedLastResetDate && savedLastResetDate !== today) {
-      initialQuests = initialQuests.map((quest) => ({
-        ...quest,
-        completed: false,
-      }));
+      // New day detected - remove all quests completely
+      initialQuests = [];
       localStorage.setItem("lastResetDate", today);
+      // Preserve XP, Stats, Power, Rank, Hunter Title, Streak, Notifications
     } else if (!savedLastResetDate) {
+      // First time setup
       localStorage.setItem("lastResetDate", today);
+    } else {
+      // Same day - restore existing quests from localStorage
+      const savedQuests = localStorage.getItem("quests");
+      if (savedQuests) {
+        initialQuests = JSON.parse(savedQuests);
+      }
     }
 
+    // Streak logic: Reset if no quest completed yesterday
     const yesterday = new Date(Date.now() - 86400000).toISOString().split("T")[0];
     if (savedLastCompletedDate && savedLastCompletedDate !== today && savedLastCompletedDate !== yesterday) {
       initialStreak = 0;
@@ -344,6 +347,54 @@ function deleteQuest(index: number) {
 
   setQuests(updatedQuests);
 }
+
+function applyEngineeringDayTemplate() {
+  const templateQuests = [
+    { name: "Research Topic", xp: 20, stat: "INT" as StatKey },
+    { name: "CAD Practice", xp: 30, stat: "ENG" as StatKey },
+    { name: "Team Meeting", xp: 20, stat: "DISC" as StatKey },
+    { name: "Workout", xp: 20, stat: "STR" as StatKey },
+  ];
+
+  const newQuests = [...quests];
+
+  // Add each template quest if it doesn't already exist
+  for (const template of templateQuests) {
+    const questExists = newQuests.some((q) => q.name === template.name);
+    if (!questExists) {
+      newQuests.push({
+        name: template.name,
+        xp: template.xp,
+        stat: template.stat,
+        completed: false,
+      });
+    }
+  }
+
+  setQuests(newQuests);
+  pushNotification("[SYSTEM] Engineering Day template loaded!");
+}
+
+function quickAddQuest(name: string, stat: StatKey, xp: number) {
+  // Check if quest with same name already exists (active or completed)
+  const questExists = quests.some((q) => q.name === name);
+  
+  if (questExists) {
+    pushNotification(`[SYSTEM] "${name}" is already in your quest list.`);
+    return;
+  }
+
+  const newQuest = {
+    name,
+    xp,
+    stat,
+    completed: false,
+  };
+
+  setQuests([...quests, newQuest]);
+  pushNotification(`[SYSTEM] Added: ${name} (+${xp} XP)`);
+}
+
   function resetSystem() {
   localStorage.clear();
 
@@ -412,6 +463,57 @@ function deleteQuest(index: number) {
             <div className="text-xs text-zinc-400 mt-2">{xp} / {maxXp} XP</div>
           </div>
         </div>
+
+      {/* QUEST TEMPLATES */}
+      <div className="bg-zinc-900 p-6 rounded-2xl mb-6">
+        <h2 className="text-2xl font-semibold mb-4 text-cyan-300">
+          Quest Templates
+        </h2>
+
+        <button
+          onClick={applyEngineeringDayTemplate}
+          className={`w-full ${theme.buttonBg} p-3 rounded-xl transition-colors ${theme.buttonHover} font-semibold`}
+        >
+          Engineering Day
+        </button>
+      </div>
+
+      {/* QUICK ADD */}
+      <div className="bg-zinc-900 p-6 rounded-2xl mb-6">
+        <h2 className="text-2xl font-semibold mb-4 text-cyan-300">
+          Quick Add
+        </h2>
+
+        <div className="grid grid-cols-2 gap-3">
+          <button
+            onClick={() => quickAddQuest("Research", "INT", 20)}
+            className={`${theme.buttonBg} p-3 rounded-xl transition-colors ${theme.buttonHover} font-semibold text-sm`}
+          >
+            Research
+          </button>
+
+          <button
+            onClick={() => quickAddQuest("Team Meeting", "DISC", 20)}
+            className={`${theme.buttonBg} p-3 rounded-xl transition-colors ${theme.buttonHover} font-semibold text-sm`}
+          >
+            Team Meeting
+          </button>
+
+          <button
+            onClick={() => quickAddQuest("CAD Practice", "ENG", 30)}
+            className={`${theme.buttonBg} p-3 rounded-xl transition-colors ${theme.buttonHover} font-semibold text-sm`}
+          >
+            CAD Practice
+          </button>
+
+          <button
+            onClick={() => quickAddQuest("Workout", "STR", 20)}
+            className={`${theme.buttonBg} p-3 rounded-xl transition-colors ${theme.buttonHover} font-semibold text-sm`}
+          >
+            Workout
+          </button>
+        </div>
+      </div>
 
       {/* ADD QUEST */}
 <div className="bg-zinc-900 p-6 rounded-2xl mb-6">
