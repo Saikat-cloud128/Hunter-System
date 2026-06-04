@@ -11,6 +11,8 @@ type Quest = {
   completed: boolean;
 };
 
+type Rank = "Monarch" | "S" | "A" | "B" | "C" | "D" | "E";
+
 type Notification = {
   id: number;
   message: string;
@@ -33,6 +35,12 @@ export default function Home() {
   const [selectedStat, setSelectedStat] = useState<StatKey>("STR");
   const [streak, setStreak] = useState(0);
   const [lastCompletedDate, setLastCompletedDate] = useState("");
+  const [totalXPEarned, setTotalXPEarned] = useState(0);
+  const [questsCompleted, setQuestsCompleted] = useState(0);
+  const [longestStreak, setLongestStreak] = useState(0);
+  const [highestRank, setHighestRank] = useState<Rank>("E");
+  const [daysActive, setDaysActive] = useState(0);
+  const [lastActiveDate, setLastActiveDate] = useState("");
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
   const maxXp = 100;
@@ -57,6 +65,14 @@ export default function Home() {
       : "E";
 
   const rank = getRank(power);
+
+  const rankOrder: Rank[] = ["E", "D", "C", "B", "A", "S", "Monarch"];
+
+  const getHighestRank = (currentRank: Rank, previousRank: Rank) => {
+    return rankOrder.indexOf(currentRank) > rankOrder.indexOf(previousRank)
+      ? currentRank
+      : previousRank;
+  };
 
   type ThemeColors = {
     border: string;
@@ -187,10 +203,36 @@ export default function Home() {
     const savedStreak = localStorage.getItem("streak");
     const savedLastCompletedDate = localStorage.getItem("lastCompletedDate");
     const savedLastResetDate = localStorage.getItem("lastResetDate");
+    const savedLastActiveDate = localStorage.getItem("lastActiveDate");
+    const savedDaysActive = localStorage.getItem("daysActive");
+    const savedTotalXPEarned = localStorage.getItem("totalXPEarned");
+    const savedQuestsCompleted = localStorage.getItem("questsCompleted");
+    const savedLongestStreak = localStorage.getItem("longestStreak");
+    const savedHighestRank = localStorage.getItem("highestRank");
 
     let initialQuests: Quest[] = [];
     let initialStreak = savedStreak ? Number(savedStreak) : 0;
     let initialLastCompleted = savedLastCompletedDate || "";
+    let initialDaysActive = savedDaysActive ? Number(savedDaysActive) : 0;
+
+    if (savedLastActiveDate !== today) {
+      initialDaysActive += 1;
+      localStorage.setItem("lastActiveDate", today);
+    }
+
+    setDaysActive(initialDaysActive);
+    setLastActiveDate(today);
+
+    if (savedTotalXPEarned) {
+      setTotalXPEarned(Number(savedTotalXPEarned));
+    }
+    if (savedQuestsCompleted) {
+      setQuestsCompleted(Number(savedQuestsCompleted));
+    }
+    if (savedLongestStreak) {
+      setLongestStreak(Number(savedLongestStreak));
+    }
+    setHighestRank((savedHighestRank as Rank) || "E");
 
     // Daily Reset: Clear all quests at the start of a new day
     if (savedLastResetDate && savedLastResetDate !== today) {
@@ -235,7 +277,13 @@ export default function Home() {
     localStorage.setItem("stats", JSON.stringify(stats));
     localStorage.setItem("streak", streak.toString());
     localStorage.setItem("lastCompletedDate", lastCompletedDate);
-  }, [quests, xp, stats, streak, lastCompletedDate]);
+    localStorage.setItem("totalXPEarned", totalXPEarned.toString());
+    localStorage.setItem("questsCompleted", questsCompleted.toString());
+    localStorage.setItem("longestStreak", longestStreak.toString());
+    localStorage.setItem("highestRank", highestRank);
+    localStorage.setItem("daysActive", daysActive.toString());
+    localStorage.setItem("lastActiveDate", lastActiveDate);
+  }, [quests, xp, stats, streak, lastCompletedDate, totalXPEarned, questsCompleted, longestStreak, highestRank, daysActive, lastActiveDate]);
 
   function pushNotification(message: string) {
     const id = Date.now() + Math.floor(Math.random() * 1000);
@@ -293,20 +341,27 @@ export default function Home() {
       const newPower = newStats.STR + newStats.INT + newStats.DISC + newStats.ENG;
       const prevRank = getRank(prevPower);
       const newRank = getRank(newPower);
+      const newTotalXPEarned = totalXPEarned + quest.xp;
+      const newQuestsCompleted = questsCompleted + 1;
+      const today = new Date().toISOString().split("T")[0];
+      const yesterday = new Date(Date.now() - 86400000).toISOString().split("T")[0];
+      const newStreakValue =
+        lastCompletedDate === today
+          ? streak
+          : lastCompletedDate === yesterday
+          ? streak + 1
+          : 1;
+      const newHighestRank = getHighestRank(newRank, highestRank);
 
       // apply updates
       updatedQuests[index].completed = true;
       setXp(newXp);
       setStats(newStats);
-
-      // streak logic
-      const today = new Date().toISOString().split("T")[0];
-      const yesterday = new Date(Date.now() - 86400000).toISOString().split("T")[0];
-
-      setStreak((prevStreak) => {
-        if (lastCompletedDate === today) return prevStreak;
-        return lastCompletedDate === yesterday ? prevStreak + 1 : 1;
-      });
+      setTotalXPEarned(newTotalXPEarned);
+      setQuestsCompleted(newQuestsCompleted);
+      setStreak(newStreakValue);
+      setLongestStreak((prev) => Math.max(prev, newStreakValue));
+      setHighestRank(newHighestRank);
       setLastCompletedDate(today);
 
       setQuests(updatedQuests);
@@ -395,12 +450,24 @@ function quickAddQuest(name: string, stat: StatKey, xp: number) {
   pushNotification(`[SYSTEM] Added: ${name} (+${xp} XP)`);
 }
 
+  useEffect(() => {
+    if (rankOrder.indexOf(rank) > rankOrder.indexOf(highestRank)) {
+      setHighestRank(rank);
+    }
+  }, [rank, highestRank]);
+
   function resetSystem() {
   localStorage.clear();
 
   setXp(0);
   setStreak(0);
   setLastCompletedDate("");
+  setTotalXPEarned(0);
+  setQuestsCompleted(0);
+  setLongestStreak(0);
+  setHighestRank("E");
+  setDaysActive(0);
+  setLastActiveDate("");
 
   setStats({
     STR: 5,
@@ -614,6 +681,40 @@ function quickAddQuest(name: string, stat: StatKey, xp: number) {
 
           <div className="bg-zinc-800 p-4 rounded-xl">
             ENG: {stats.ENG}
+          </div>
+        </div>
+      </div>
+
+      {/* HUNTER RECORDS */}
+      <div className="bg-zinc-900 p-6 rounded-2xl mt-6">
+        <h2 className="text-2xl font-semibold mb-4 text-cyan-300">
+          Hunter Records
+        </h2>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="bg-zinc-800 p-4 rounded-xl">
+            <div className="text-xs text-zinc-400 uppercase mb-2">Total XP Earned</div>
+            <div className={`text-2xl font-semibold ${theme.highlight}`}>{totalXPEarned}</div>
+          </div>
+
+          <div className="bg-zinc-800 p-4 rounded-xl">
+            <div className="text-xs text-zinc-400 uppercase mb-2">Quests Completed</div>
+            <div className={`text-2xl font-semibold ${theme.highlight}`}>{questsCompleted}</div>
+          </div>
+
+          <div className="bg-zinc-800 p-4 rounded-xl">
+            <div className="text-xs text-zinc-400 uppercase mb-2">Longest Streak</div>
+            <div className={`text-2xl font-semibold ${theme.highlight}`}>{longestStreak}</div>
+          </div>
+
+          <div className="bg-zinc-800 p-4 rounded-xl">
+            <div className="text-xs text-zinc-400 uppercase mb-2">Highest Rank Achieved</div>
+            <div className={`text-2xl font-semibold ${theme.highlight}`}>{highestRank}</div>
+          </div>
+
+          <div className="bg-zinc-800 p-4 rounded-xl">
+            <div className="text-xs text-zinc-400 uppercase mb-2">Days Active</div>
+            <div className={`text-2xl font-semibold ${theme.highlight}`}>{daysActive}</div>
           </div>
         </div>
       </div>
