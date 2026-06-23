@@ -751,29 +751,29 @@ function quickAddQuest(name: string, stat: StatKey, xp: number) {
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <div className="bg-zinc-800 p-4 rounded-xl">
-            <div className="text-xs text-zinc-400 uppercase mb-2">Total XP Earned</div>
-            <div className={`text-2xl font-semibold ${theme.highlight}`}>{totalXPEarned}</div>
+          <div className="bg-zinc-800 p-6 rounded-xl">
+            <div className="text-xs text-zinc-400 uppercase mb-3 tracking-widest font-semibold">Total XP Earned</div>
+            <div className={`text-5xl font-extrabold ${theme.highlight} leading-none drop-shadow-md`}>{totalXPEarned}</div>
           </div>
 
-          <div className="bg-zinc-800 p-4 rounded-xl">
-            <div className="text-xs text-zinc-400 uppercase mb-2">Quests Completed</div>
-            <div className={`text-2xl font-semibold ${theme.highlight}`}>{questsCompleted}</div>
+          <div className="bg-zinc-800 p-6 rounded-xl">
+            <div className="text-xs text-zinc-400 uppercase mb-3 tracking-widest font-semibold">Quests Completed</div>
+            <div className={`text-5xl font-extrabold ${theme.highlight} leading-none drop-shadow-md`}>{questsCompleted}</div>
           </div>
 
-          <div className="bg-zinc-800 p-4 rounded-xl">
-            <div className="text-xs text-zinc-400 uppercase mb-2">Longest Streak</div>
-            <div className={`text-2xl font-semibold ${theme.highlight}`}>{longestStreak}</div>
+          <div className="bg-zinc-800 p-6 rounded-xl">
+            <div className="text-xs text-zinc-400 uppercase mb-3 tracking-widest font-semibold">Longest Streak</div>
+            <div className={`text-5xl font-extrabold ${theme.highlight} leading-none drop-shadow-md`}>{longestStreak}</div>
           </div>
 
-          <div className="bg-zinc-800 p-4 rounded-xl">
-            <div className="text-xs text-zinc-400 uppercase mb-2">Highest Rank Achieved</div>
-            <div className={`text-2xl font-semibold ${theme.highlight}`}>{highestRank}</div>
+          <div className="bg-zinc-800 p-6 rounded-xl">
+            <div className="text-xs text-zinc-400 uppercase mb-3 tracking-widest font-semibold">Highest Rank Achieved</div>
+            <div className={`text-5xl font-extrabold ${theme.highlight} leading-none drop-shadow-md`}>{highestRank}</div>
           </div>
 
-          <div className="bg-zinc-800 p-4 rounded-xl">
-            <div className="text-xs text-zinc-400 uppercase mb-2">Days Active</div>
-            <div className={`text-2xl font-semibold ${theme.highlight}`}>{daysActive}</div>
+          <div className="bg-zinc-800 p-6 rounded-xl">
+            <div className="text-xs text-zinc-400 uppercase mb-3 tracking-widest font-semibold">Days Active</div>
+            <div className={`text-5xl font-extrabold ${theme.highlight} leading-none drop-shadow-md`}>{daysActive}</div>
           </div>
         </div>
       </div>
