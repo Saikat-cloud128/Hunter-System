@@ -563,47 +563,128 @@ function quickAddQuest(name: string, stat: StatKey, xp: number) {
 
       
 
-      {/* QUICK ADD */}
+      {/* CORE MISSIONS */}
+      <div className="bg-zinc-900 p-6 rounded-2xl mb-6 shadow-lg shadow-cyan-500/20 ring-1 ring-cyan-500/30 border border-cyan-500/20">
+        <h2 className="font-orbitron text-2xl font-semibold mb-4 text-cyan-200 uppercase tracking-[0.18em]">
+          CORE MISSIONS
+        </h2>
+        <p className="text-zinc-400 text-sm mb-4">Core Missions reset every day and cannot be removed.</p>
+
+        {coreQuests.length === 0 ? (
+          <p className="text-zinc-400">Loading core missions...</p>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {coreQuests.map((quest, index) => (
+              <button
+                key={index}
+                onClick={() => completeCoreQuest(index)}
+                disabled={quest.completed}
+                className={`text-left p-4 rounded-xl transition-colors border border-opacity-30 ${
+                  quest.completed
+                    ? "bg-green-900/40 border-green-600 text-green-200"
+                    : `bg-gradient-to-br from-zinc-800/60 to-zinc-900/40 border-zinc-700/50 ${theme.buttonHover}`
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    <div className="font-semibold text-cyan-100">{quest.completed ? "✓ " : ""}{quest.name}</div>
+                    <div className="text-xs text-zinc-400 mt-1 uppercase tracking-wider">Reward: +{quest.xp} XP | +1 {quest.stat}</div>
+                  </div>
+                </div>
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* ACTIVE MISSIONS */}
       <div className="bg-zinc-900 p-6 rounded-2xl mb-6">
-        <h2 className="font-orbitron text-2xl font-semibold mb-4 text-cyan-300">
-          Quick Add
+        <h2 className="font-orbitron text-2xl font-semibold mb-4 text-cyan-200 uppercase tracking-[0.18em]">
+          ACTIVE MISSIONS
         </h2>
 
-        <div className="grid grid-cols-2 gap-3">
+        {quests.length === 0 ? (
+          <p className="text-zinc-400">
+            Mission queue empty.
+          </p>
+        ) : (
+          <div className="space-y-3">
+            {quests.map((quest, index) => (
+              
+              <div
+        key={index}
+        className="flex gap-2"
+      >
+        <button
+          onClick={() => completeQuest(index)}
+          disabled={quest.completed}
+          className={`flex-1 text-left p-4 rounded-xl transition-colors ${
+            quest.completed
+              ? "bg-green-700"
+              : `bg-zinc-800 ${theme.buttonHover}`
+          }`}
+        >
+          {quest.completed ? "✓ " : ""}
+          {quest.name} (+{quest.xp} XP)
+        </button>
+
+        <button
+          onClick={() => deleteQuest(index)}
+          className="bg-red-700 px-4 rounded-xl hover:bg-red-900"
+        >
+          ✕
+        </button>
+      </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* MISSION BOARD */}
+      <div className="bg-zinc-900 p-6 rounded-2xl mb-6">
+        <h2 className="font-orbitron text-2xl font-semibold mb-4 text-cyan-200 uppercase tracking-[0.18em]">
+          MISSION BOARD
+        </h2>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <button
             onClick={() => quickAddQuest("Research", "INT", 20)}
-            className={`${theme.buttonBg} p-3 rounded-xl transition-colors ${theme.buttonHover} font-semibold text-sm`}
+            className={`text-left p-4 rounded-xl transition-colors border border-opacity-30 bg-gradient-to-br from-zinc-800/60 to-zinc-900/40 border-zinc-700/50 ${theme.buttonHover}`}
           >
-            Research
+            <div className="font-semibold text-cyan-100">Research</div>
+            <div className="text-xs text-zinc-400 mt-1 uppercase tracking-wider">Reward: +20 XP | +1 INT</div>
           </button>
 
           <button
             onClick={() => quickAddQuest("Meeting", "DISC", 20)}
-            className={`${theme.buttonBg} p-3 rounded-xl transition-colors ${theme.buttonHover} font-semibold text-sm`}
+            className={`text-left p-4 rounded-xl transition-colors border border-opacity-30 bg-gradient-to-br from-zinc-800/60 to-zinc-900/40 border-zinc-700/50 ${theme.buttonHover}`}
           >
-            Meeting
+            <div className="font-semibold text-cyan-100">Meeting</div>
+            <div className="text-xs text-zinc-400 mt-1 uppercase tracking-wider">Reward: +20 XP | +1 DISC</div>
           </button>
 
           <button
             onClick={() => quickAddQuest("CAD Practice", "ENG", 30)}
-            className={`${theme.buttonBg} p-3 rounded-xl transition-colors ${theme.buttonHover} font-semibold text-sm`}
+            className={`text-left p-4 rounded-xl transition-colors border border-opacity-30 bg-gradient-to-br from-zinc-800/60 to-zinc-900/40 border-zinc-700/50 ${theme.buttonHover}`}
           >
-            CAD Practice
+            <div className="font-semibold text-cyan-100">CAD Practice</div>
+            <div className="text-xs text-zinc-400 mt-1 uppercase tracking-wider">Reward: +30 XP | +1 ENG</div>
           </button>
 
           <button
             onClick={() => quickAddQuest("Training", "STR", 20)}
-            className={`${theme.buttonBg} p-3 rounded-xl transition-colors ${theme.buttonHover} font-semibold text-sm`}
+            className={`text-left p-4 rounded-xl transition-colors border border-opacity-30 bg-gradient-to-br from-zinc-800/60 to-zinc-900/40 border-zinc-700/50 ${theme.buttonHover}`}
           >
-            Training
+            <div className="font-semibold text-cyan-100">Training</div>
+            <div className="text-xs text-zinc-400 mt-1 uppercase tracking-wider">Reward: +20 XP | +1 STR</div>
           </button>
         </div>
       </div>
 
-      {/* ADD QUEST */}
+      {/* ADD MISSION */}
 <div className="bg-zinc-900 p-6 rounded-2xl mb-6">
   <h2 className="font-orbitron text-2xl font-semibold mb-4 text-cyan-200 uppercase tracking-[0.18em]">
-    ADD MISSION
+    CUSTOM MISSION
   </h2>
 
   <div className="flex flex-col gap-4">
@@ -647,99 +728,33 @@ function quickAddQuest(name: string, stat: StatKey, xp: number) {
 
 
 
-      {/* QUESTS */}
-<div className="bg-zinc-900 p-6 rounded-2xl mb-6 shadow-lg shadow-cyan-500/20 ring-1 ring-cyan-500/30 border border-cyan-500/20">
-  <h2 className="font-orbitron text-2xl font-semibold mb-2 text-cyan-200 uppercase tracking-[0.18em]">
-    CORE MISSIONS
-  </h2>
-        <p className="text-zinc-400 text-sm mb-4">Core Missions reset every day and cannot be removed.</p>
 
-        {coreQuests.length === 0 ? (
-          <p className="text-zinc-400">Loading core missions...</p>
-        ) : (
-          <div className="space-y-3">
-            {coreQuests.map((quest, index) => (
-              <button
-                key={index}
-                onClick={() => completeCoreQuest(index)}
-                disabled={quest.completed}
-                className={`w-full text-left p-4 rounded-xl transition-colors ${
-                  quest.completed
-                    ? "bg-green-700"
-                    : `bg-zinc-800 ${theme.buttonHover}`
-                }`}
-              >
-                {quest.completed ? "✓ " : ""}
-                {quest.name} (+{quest.xp} XP)
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
 
-      <div className="bg-zinc-900 p-6 rounded-2xl mb-6">
-        <h2 className="font-orbitron text-2xl font-semibold mb-4 text-cyan-200 uppercase tracking-[0.18em]">
-          ACTIVE MISSIONS
-        </h2>
-
-        {quests.length === 0 ? (
-  <p className="text-zinc-400">
-    No active quests. Add one above.
-  </p>
-) : (
-  <div className="space-y-3">
-    {quests.map((quest, index) => (
-      
-      <div
-  key={index}
-  className="flex gap-2"
->
-  <button
-    onClick={() => completeQuest(index)}
-    disabled={quest.completed}
-    className={`flex-1 text-left p-4 rounded-xl transition-colors ${
-      quest.completed
-        ? "bg-green-700"
-        : `bg-zinc-800 ${theme.buttonHover}`
-    }`}
-  >
-    {quest.completed ? "✓ " : ""}
-    {quest.name} (+{quest.xp} XP)
-  </button>
-
-  <button
-    onClick={() => deleteQuest(index)}
-    className="bg-red-700 px-4 rounded-xl hover:bg-red-900"
-  >
-    ✕
-  </button>
-</div>
-    ))}
-  </div>
-)}
-      </div>
-
-      {/* STATS */}
+      {/* CHARACTER STATS */}
       <div className="bg-zinc-900 p-6 rounded-2xl shadow-lg shadow-cyan-500/20 ring-1 ring-cyan-500/30 border border-cyan-500/20">
         <h2 className="font-orbitron text-2xl font-semibold mb-4 text-cyan-200 uppercase tracking-[0.18em]">
           CHARACTER STATS
         </h2>
 
         <div className="grid grid-cols-2 gap-4">
-          <div className="bg-red-950 border border-red-600 p-4 rounded-xl text-red-100 shadow-sm">
-            STR: {stats.STR}
+          <div className="bg-red-950 border border-red-600 p-6 rounded-xl text-red-100 shadow-sm flex flex-col">
+            <div className="text-xs text-red-300 uppercase tracking-widest font-semibold mb-2">Strength</div>
+            <div className="text-5xl font-extrabold leading-none">{stats.STR}</div>
           </div>
 
-          <div className="bg-blue-950 border border-blue-600 p-4 rounded-xl text-blue-100 shadow-sm">
-            INT: {stats.INT}
+          <div className="bg-blue-950 border border-blue-600 p-6 rounded-xl text-blue-100 shadow-sm flex flex-col">
+            <div className="text-xs text-blue-300 uppercase tracking-widest font-semibold mb-2">Intelligence</div>
+            <div className="text-5xl font-extrabold leading-none">{stats.INT}</div>
           </div>
 
-          <div className="bg-emerald-950 border border-emerald-600 p-4 rounded-xl text-emerald-100 shadow-sm">
-            DISC: {stats.DISC}
+          <div className="bg-emerald-950 border border-emerald-600 p-6 rounded-xl text-emerald-100 shadow-sm flex flex-col">
+            <div className="text-xs text-emerald-300 uppercase tracking-widest font-semibold mb-2">Discipline</div>
+            <div className="text-5xl font-extrabold leading-none">{stats.DISC}</div>
           </div>
 
-          <div className="bg-violet-950 border border-violet-600 p-4 rounded-xl text-violet-100 shadow-sm">
-            ENG: {stats.ENG}
+          <div className="bg-violet-950 border border-violet-600 p-6 rounded-xl text-violet-100 shadow-sm flex flex-col">
+            <div className="text-xs text-violet-300 uppercase tracking-widest font-semibold mb-2">Engagement</div>
+            <div className="text-5xl font-extrabold leading-none">{stats.ENG}</div>
           </div>
         </div>
       </div>
@@ -778,15 +793,15 @@ function quickAddQuest(name: string, stat: StatKey, xp: number) {
         </div>
       </div>
 
-      {/* RESET BUTTON */}
-      <button
-        onClick={resetSystem}
-        className="mt-6 bg-red-700 px-6 py-3 rounded-xl hover:bg-red-900"
-        
-
-      >
-        Reset System
-      </button>
+      {/* SYSTEM RESET */}
+      <div className="mt-8 pt-6 border-t border-zinc-700 flex justify-center">
+        <button
+          onClick={resetSystem}
+          className="bg-red-900/40 border border-red-700/50 px-6 py-2 rounded-lg text-red-200 text-sm font-semibold hover:bg-red-900/60 transition-colors"
+        >
+          SYSTEM RESET
+        </button>
+      </div>
     </main>
   );
 }
