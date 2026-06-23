@@ -726,19 +726,19 @@ function quickAddQuest(name: string, stat: StatKey, xp: number) {
         </h2>
 
         <div className="grid grid-cols-2 gap-4">
-          <div className="bg-zinc-800 p-4 rounded-xl">
+          <div className="bg-red-950 border border-red-600 p-4 rounded-xl text-red-100 shadow-sm">
             STR: {stats.STR}
           </div>
 
-          <div className="bg-zinc-800 p-4 rounded-xl">
+          <div className="bg-blue-950 border border-blue-600 p-4 rounded-xl text-blue-100 shadow-sm">
             INT: {stats.INT}
           </div>
 
-          <div className="bg-zinc-800 p-4 rounded-xl">
+          <div className="bg-emerald-950 border border-emerald-600 p-4 rounded-xl text-emerald-100 shadow-sm">
             DISC: {stats.DISC}
           </div>
 
-          <div className="bg-zinc-800 p-4 rounded-xl">
+          <div className="bg-violet-950 border border-violet-600 p-4 rounded-xl text-violet-100 shadow-sm">
             ENG: {stats.ENG}
           </div>
         </div>
