@@ -747,7 +747,7 @@ function quickAddQuest(name: string, stat: StatKey, xp: number) {
       {/* HUNTER RECORDS */}
       <div className="bg-zinc-900 p-6 rounded-2xl mt-6">
         <h2 className="font-orbitron text-2xl font-semibold mb-4 text-cyan-300">
-          Hunter Records
+          HUNTER ARCHIVES
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
