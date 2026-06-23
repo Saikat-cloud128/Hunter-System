@@ -526,12 +526,12 @@ function quickAddQuest(name: string, stat: StatKey, xp: number) {
       </p>
 
       {/* LEVEL CARD */}
-        <div className={`bg-gradient-to-br from-zinc-900/80 to-zinc-900/60 p-6 rounded-3xl mb-6 border ${theme.border} border-opacity-50 shadow-lg shadow-cyan-500/15 ${theme.glow} transition-shadow`}>
+        <div className={`bg-gradient-to-br from-zinc-900/80 to-zinc-900/60 p-6 rounded-3xl mb-6 border ${theme.border} border-opacity-50 shadow-lg shadow-cyan-500/20 ring-1 ring-cyan-500/30 ${theme.glow} transition-shadow`}>
           <div className="flex items-start justify-between gap-6">
             <div className="flex items-center gap-4">
               <div className={`px-4 py-3 rounded-xl bg-black/30 border ${theme.border} border-opacity-30`}>
                 <div className="font-orbitron text-xs text-zinc-300 uppercase">Rank</div>
-                <div className={`font-orbitron text-2xl font-extrabold ${theme.accent} tracking-wide`}>{rank}</div>
+                <div className={`font-orbitron text-4xl font-extrabold ${theme.accent} tracking-wide`}>{rank}</div>
               </div>
 
               <div>
@@ -603,7 +603,7 @@ function quickAddQuest(name: string, stat: StatKey, xp: number) {
       {/* ADD QUEST */}
 <div className="bg-zinc-900 p-6 rounded-2xl mb-6">
   <h2 className="font-orbitron text-2xl font-semibold mb-4 text-cyan-200 uppercase tracking-[0.18em]">
-    [SYSTEM] ADD MISSION
+    ADD MISSION
   </h2>
 
   <div className="flex flex-col gap-4">
@@ -648,10 +648,10 @@ function quickAddQuest(name: string, stat: StatKey, xp: number) {
 
 
       {/* QUESTS */}
-      <div className="bg-zinc-900 p-6 rounded-2xl mb-6">
-        <h2 className="font-orbitron text-2xl font-semibold mb-2 text-cyan-300">
-          Core Missions
-        </h2>
+<div className="bg-zinc-900 p-6 rounded-2xl mb-6 shadow-lg shadow-cyan-500/20 ring-1 ring-cyan-500/30 border border-cyan-500/20">
+  <h2 className="font-orbitron text-2xl font-semibold mb-2 text-cyan-200 uppercase tracking-[0.18em]">
+    CORE MISSIONS
+  </h2>
         <p className="text-zinc-400 text-sm mb-4">Core Missions reset every day and cannot be removed.</p>
 
         {coreQuests.length === 0 ? (
@@ -679,7 +679,7 @@ function quickAddQuest(name: string, stat: StatKey, xp: number) {
 
       <div className="bg-zinc-900 p-6 rounded-2xl mb-6">
         <h2 className="font-orbitron text-2xl font-semibold mb-4 text-cyan-200 uppercase tracking-[0.18em]">
-          [SYSTEM] ACTIVE MISSIONS
+          ACTIVE MISSIONS
         </h2>
 
         {quests.length === 0 ? (
@@ -720,9 +720,9 @@ function quickAddQuest(name: string, stat: StatKey, xp: number) {
       </div>
 
       {/* STATS */}
-      <div className="bg-zinc-900 p-6 rounded-2xl shadow-lg shadow-cyan-500/15">
+      <div className="bg-zinc-900 p-6 rounded-2xl shadow-lg shadow-cyan-500/20 ring-1 ring-cyan-500/30 border border-cyan-500/20">
         <h2 className="font-orbitron text-2xl font-semibold mb-4 text-cyan-200 uppercase tracking-[0.18em]">
-          [SYSTEM] CHARACTER STATS
+          CHARACTER STATS
         </h2>
 
         <div className="grid grid-cols-2 gap-4">
@@ -745,9 +745,9 @@ function quickAddQuest(name: string, stat: StatKey, xp: number) {
       </div>
 
       {/* HUNTER RECORDS */}
-      <div className="bg-zinc-900 p-6 rounded-2xl mt-6 shadow-lg shadow-cyan-500/15">
+      <div className="bg-zinc-900 p-6 rounded-2xl mt-6 shadow-lg shadow-cyan-500/20 ring-1 ring-cyan-500/30 border border-cyan-500/20">
         <h2 className="font-orbitron text-2xl font-semibold mb-4 text-cyan-200 uppercase tracking-[0.18em]">
-          [SYSTEM] HUNTER ARCHIVES
+          HUNTER ARCHIVES
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
