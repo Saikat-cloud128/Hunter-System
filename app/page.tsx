@@ -526,7 +526,7 @@ function quickAddQuest(name: string, stat: StatKey, xp: number) {
       </p>
 
       {/* LEVEL CARD */}
-        <div className={`bg-gradient-to-br from-zinc-900/80 to-zinc-900/60 p-6 rounded-3xl mb-6 border ${theme.border} border-opacity-50 shadow-lg ${theme.glow} transition-shadow`}>
+        <div className={`bg-gradient-to-br from-zinc-900/80 to-zinc-900/60 p-6 rounded-3xl mb-6 border ${theme.border} border-opacity-50 shadow-lg shadow-cyan-500/15 ${theme.glow} transition-shadow`}>
           <div className="flex items-start justify-between gap-6">
             <div className="flex items-center gap-4">
               <div className={`px-4 py-3 rounded-xl bg-black/30 border ${theme.border} border-opacity-30`}>
@@ -720,7 +720,7 @@ function quickAddQuest(name: string, stat: StatKey, xp: number) {
       </div>
 
       {/* STATS */}
-      <div className="bg-zinc-900 p-6 rounded-2xl">
+      <div className="bg-zinc-900 p-6 rounded-2xl shadow-lg shadow-cyan-500/15">
         <h2 className="font-orbitron text-2xl font-semibold mb-4 text-cyan-200 uppercase tracking-[0.18em]">
           [SYSTEM] CHARACTER STATS
         </h2>
@@ -745,7 +745,7 @@ function quickAddQuest(name: string, stat: StatKey, xp: number) {
       </div>
 
       {/* HUNTER RECORDS */}
-      <div className="bg-zinc-900 p-6 rounded-2xl mt-6">
+      <div className="bg-zinc-900 p-6 rounded-2xl mt-6 shadow-lg shadow-cyan-500/15">
         <h2 className="font-orbitron text-2xl font-semibold mb-4 text-cyan-200 uppercase tracking-[0.18em]">
           [SYSTEM] HUNTER ARCHIVES
         </h2>
