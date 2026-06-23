@@ -526,26 +526,26 @@ function quickAddQuest(name: string, stat: StatKey, xp: number) {
       </p>
 
       {/* LEVEL CARD */}
-        <div className={`bg-gradient-to-br from-zinc-900/80 to-zinc-900/60 p-6 rounded-3xl mb-6 border ${theme.border} border-opacity-50 shadow-lg shadow-cyan-500/20 ring-1 ring-cyan-500/30 ${theme.glow} transition-shadow`}>
-          <div className="flex items-start justify-between gap-6">
-            <div className="flex items-center gap-4">
-              <div className={`px-4 py-3 rounded-xl bg-black/30 border ${theme.border} border-opacity-30`}>
-                <div className="font-orbitron text-xs text-zinc-300 uppercase">Rank</div>
-                <div className={`font-orbitron text-4xl font-extrabold ${theme.accent} tracking-wide`}>{rank}</div>
+        <div className={`bg-gradient-to-br from-zinc-900/80 to-zinc-900/60 p-8 rounded-3xl mb-6 border ${theme.border} border-opacity-50 shadow-lg shadow-cyan-500/20 ring-1 ring-cyan-500/30 ${theme.glow} transition-shadow`}>
+          <div className="flex items-start justify-between gap-8">
+            <div className="flex items-center gap-6">
+              <div className={`px-6 py-4 rounded-2xl bg-gradient-to-br from-black/50 to-black/30 border-2 ${theme.border} border-opacity-60 shadow-lg ${theme.border === 'border-cyan-500' ? 'shadow-cyan-500/25' : 'shadow-blue-500/20'} ring-1 ${theme.border === 'border-cyan-500' ? 'ring-cyan-500/40' : 'ring-blue-500/30'}`}>
+                <div className="font-orbitron text-xs text-zinc-300 uppercase tracking-widest">Rank</div>
+                <div className={`font-orbitron text-7xl font-extrabold ${theme.accent} tracking-wider leading-none drop-shadow-lg`} style={{textShadow: `0 0 20px ${theme.border === 'border-cyan-500' ? 'rgba(34, 211, 238, 0.4)' : 'rgba(59, 130, 246, 0.3)'}`}}>{rank}</div>
               </div>
 
               <div>
-                <div className="text-sm text-zinc-400">Level</div>
-                <div className={`text-3xl font-bold ${theme.highlight}`}>Lv {level}</div>
-                <div className="mt-1 text-sm text-amber-200 font-semibold tracking-wide drop-shadow-sm">{title}</div>
+                <div className="text-xs text-zinc-400 uppercase tracking-wide font-semibold">Level</div>
+                <div className={`text-4xl font-extrabold ${theme.highlight} leading-none`}>Lv {level}</div>
+                <div className="mt-2 text-lg text-amber-200 font-semibold tracking-wide drop-shadow-sm">{title}</div>
               </div>
             </div>
 
             <div className="text-right">
-              <div className="text-xs text-zinc-400">Power</div>
-              <div className={`text-2xl font-semibold ${theme.highlight}`}>{power}</div>
-              <div className="mt-2 text-xs text-amber-300">🔥 {streak} Day Streak</div>
-              <div className={`mt-2 text-xs ${theme.highlight}`}>{currentDate}</div>
+              <div className="text-xs text-zinc-400 uppercase tracking-wide font-semibold">Power</div>
+              <div className={`text-4xl font-extrabold ${theme.highlight} leading-none drop-shadow-md`}>{power}</div>
+              <div className="mt-3 text-sm text-amber-300 font-semibold">🔥 {streak} Day Streak</div>
+              <div className={`mt-2 text-xs ${theme.highlight} font-mono`}>{currentDate}</div>
             </div>
           </div>
 
