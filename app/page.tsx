@@ -483,6 +483,9 @@ function quickAddQuest(name: string, stat: StatKey, xp: number) {
   }, [rank, highestRank]);
 
   function resetSystem() {
+    const confirmed = confirm(
+    "Are you sure? This will erase all Hunter progress."
+    );
   localStorage.clear();
 
   setXp(0);
@@ -779,6 +782,8 @@ function quickAddQuest(name: string, stat: StatKey, xp: number) {
       <button
         onClick={resetSystem}
         className="mt-6 bg-red-700 px-6 py-3 rounded-xl hover:bg-red-900"
+        
+
       >
         Reset System
       </button>
