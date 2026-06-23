@@ -48,8 +48,21 @@ export default function Home() {
   const [daysActive, setDaysActive] = useState(0);
   const [lastActiveDate, setLastActiveDate] = useState("");
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [missionCompletePopup, setMissionCompletePopup] = useState<{
+    missionName: string;
+    xp: number;
+    statName: string;
+    statIncrease: number;
+  } | null>(null);
 
   const maxXp = 100;
+
+  const statNameMap: Record<StatKey, string> = {
+    STR: "Strength",
+    INT: "Intelligence",
+    DISC: "Discipline",
+    ENG: "Engagement",
+  };
 
   const level = Math.floor(xp / maxXp) + 1;
 
@@ -336,6 +349,62 @@ export default function Home() {
     );
   }
 
+  function MissionCompletePopup() {
+    const [visible, setVisible] = useState(false);
+
+    useEffect(() => {
+      setVisible(true);
+      const hideTimer = setTimeout(() => setVisible(false), 2800);
+      const removeTimer = setTimeout(() => setMissionCompletePopup(null), 3200);
+      return () => {
+        clearTimeout(hideTimer);
+        clearTimeout(removeTimer);
+      };
+    }, []);
+
+    if (!missionCompletePopup) return null;
+
+    return (
+      <div
+        className={`fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[60] transition-all duration-500 ease-out ${
+          visible ? "opacity-100 scale-100" : "opacity-0 scale-95"
+        }`}
+      >
+        <div className="bg-gradient-to-b from-zinc-900/95 to-zinc-900/90 border-2 border-cyan-500/50 rounded-3xl p-12 shadow-2xl shadow-cyan-500/30 max-w-md w-full text-center">
+          <div className="flex items-center justify-center gap-2 mb-6">
+            <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
+            <span className="text-xs text-cyan-400 uppercase tracking-widest font-semibold">● SYSTEM MESSAGE ●</span>
+            <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
+          </div>
+
+          <h3 className="font-orbitron text-2xl font-bold text-cyan-200 uppercase tracking-[0.15em] mb-6">
+            MISSION COMPLETE
+          </h3>
+
+          <div className="mb-8">
+            <p className="text-2xl font-semibold text-cyan-100 mb-6">{missionCompletePopup.missionName}</p>
+            <div className="space-y-3">
+              <div className="bg-zinc-800/50 border border-cyan-500/20 rounded-xl p-3">
+                <p className="text-xs text-zinc-400 uppercase tracking-wider mb-1">XP Awarded</p>
+                <p className="text-3xl font-extrabold text-cyan-300">+{missionCompletePopup.xp} XP</p>
+              </div>
+              <div className="bg-zinc-800/50 border border-cyan-500/20 rounded-xl p-3">
+                <p className="text-xs text-zinc-400 uppercase tracking-wider mb-1">Attribute Awarded</p>
+                <p className="text-3xl font-extrabold text-cyan-300">+{missionCompletePopup.statIncrease} {missionCompletePopup.statName}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-center gap-2">
+            <div className="w-1 h-1 bg-cyan-400 rounded-full"></div>
+            <span className="text-xs text-cyan-500 tracking-widest">━━━</span>
+            <div className="w-1 h-1 bg-cyan-400 rounded-full"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   function awardQuestReward(
     quest: Quest,
     updatedQuests: Quest[],
@@ -377,6 +446,13 @@ export default function Home() {
     setHighestRank(newHighestRank);
     setLastCompletedDate(today);
     setQuestList(updatedQuests);
+
+    setMissionCompletePopup({
+      missionName: quest.name,
+      xp: quest.xp,
+      statName: statNameMap[quest.stat],
+      statIncrease: 1,
+    });
 
     pushNotification(`[SYSTEM] Quest completed: ${quest.name} (+${quest.xp} XP)`);
     pushNotification(`[SYSTEM] ${quest.stat} has increased by 1`);
@@ -517,6 +593,9 @@ function quickAddQuest(name: string, stat: StatKey, xp: number) {
           <NotificationItem key={n.id} id={n.id} message={n.message} themeData={theme} />
         ))}
       </div>
+
+      {/* Mission Complete Popup */}
+      <MissionCompletePopup />
       <h1 className="font-orbitron text-5xl font-bold text-cyan-400 mb-2">
         HUNTER SYSTEM
       </h1>
@@ -563,12 +642,16 @@ function quickAddQuest(name: string, stat: StatKey, xp: number) {
 
       
 
-      {/* CORE MISSIONS */}
+      {/* DAILY QUEST */}
       <div className="bg-zinc-900 p-6 rounded-2xl mb-6 shadow-lg shadow-cyan-500/20 ring-1 ring-cyan-500/30 border border-cyan-500/20">
+        <div className="flex items-center gap-2 mb-4">
+          <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
+          <span className="text-xs text-cyan-400 uppercase tracking-widest font-semibold">● SYSTEM MESSAGE ●</span>
+        </div>
         <h2 className="font-orbitron text-2xl font-semibold mb-4 text-cyan-200 uppercase tracking-[0.18em]">
-          CORE MISSIONS
+          DAILY QUEST
         </h2>
-        <p className="text-zinc-400 text-sm mb-4">Core Missions reset every day and cannot be removed.</p>
+        <p className="text-zinc-500 text-sm mb-4 italic">Essential daily objectives reset at midnight. Completion required for rank maintenance.</p>
 
         {coreQuests.length === 0 ? (
           <p className="text-zinc-400">Loading core missions...</p>
@@ -597,15 +680,19 @@ function quickAddQuest(name: string, stat: StatKey, xp: number) {
         )}
       </div>
 
-      {/* ACTIVE MISSIONS */}
+      {/* ACTIVE OBJECTIVES */}
       <div className="bg-zinc-900 p-6 rounded-2xl mb-6">
+        <div className="flex items-center gap-2 mb-4">
+          <div className="w-2 h-2 bg-cyan-400 rounded-full"></div>
+          <span className="text-xs text-cyan-500 uppercase tracking-widest font-semibold">● OBJECTIVE LOG ●</span>
+        </div>
         <h2 className="font-orbitron text-2xl font-semibold mb-4 text-cyan-200 uppercase tracking-[0.18em]">
-          ACTIVE MISSIONS
+          ACTIVE OBJECTIVES
         </h2>
 
         {quests.length === 0 ? (
-          <p className="text-zinc-400">
-            Mission queue empty.
+          <p className="text-zinc-500 italic">
+            No active objectives. Select missions from the Terminal.
           </p>
         ) : (
           <div className="space-y-3">
@@ -640,10 +727,14 @@ function quickAddQuest(name: string, stat: StatKey, xp: number) {
         )}
       </div>
 
-      {/* MISSION BOARD */}
-      <div className="bg-zinc-900 p-6 rounded-2xl mb-6">
+      {/* MISSION TERMINAL */}
+      <div className="bg-zinc-900 p-6 rounded-2xl mb-6 shadow-lg shadow-cyan-500/20 ring-1 ring-cyan-500/30 border border-cyan-500/20">
+        <div className="flex items-center gap-2 mb-4">
+          <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
+          <span className="text-xs text-cyan-400 uppercase tracking-widest font-semibold">● TERMINAL ACCESS ●</span>
+        </div>
         <h2 className="font-orbitron text-2xl font-semibold mb-4 text-cyan-200 uppercase tracking-[0.18em]">
-          MISSION BOARD
+          MISSION TERMINAL
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -681,10 +772,14 @@ function quickAddQuest(name: string, stat: StatKey, xp: number) {
         </div>
       </div>
 
-      {/* ADD MISSION */}
+      {/* CUSTOM OBJECTIVE */}
 <div className="bg-zinc-900 p-6 rounded-2xl mb-6">
+  <div className="flex items-center gap-2 mb-4">
+    <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+    <span className="text-xs text-blue-400 uppercase tracking-widest font-semibold">● CUSTOM PROTOCOL ●</span>
+  </div>
   <h2 className="font-orbitron text-2xl font-semibold mb-4 text-cyan-200 uppercase tracking-[0.18em]">
-    CUSTOM MISSION
+    CUSTOM OBJECTIVE
   </h2>
 
   <div className="flex flex-col gap-4">
@@ -730,10 +825,14 @@ function quickAddQuest(name: string, stat: StatKey, xp: number) {
 
 
 
-      {/* CHARACTER STATS */}
-      <div className="bg-zinc-900 p-6 rounded-2xl shadow-lg shadow-cyan-500/20 ring-1 ring-cyan-500/30 border border-cyan-500/20">
+      {/* HUNTER ATTRIBUTES */}
+      <div className="bg-zinc-900 p-6 rounded-2xl shadow-lg shadow-cyan-500/30 ring-2 ring-cyan-500/40 border border-cyan-500/30">
+        <div className="flex items-center gap-2 mb-4">
+          <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
+          <span className="text-xs text-cyan-400 uppercase tracking-widest font-semibold">● ATTRIBUTE SCAN ●</span>
+        </div>
         <h2 className="font-orbitron text-2xl font-semibold mb-4 text-cyan-200 uppercase tracking-[0.18em]">
-          CHARACTER STATS
+          HUNTER ATTRIBUTES
         </h2>
 
         <div className="grid grid-cols-2 gap-4">
@@ -759,35 +858,39 @@ function quickAddQuest(name: string, stat: StatKey, xp: number) {
         </div>
       </div>
 
-      {/* HUNTER RECORDS */}
+      {/* SYSTEM RECORDS */}
       <div className="bg-zinc-900 p-6 rounded-2xl mt-6 shadow-lg shadow-cyan-500/20 ring-1 ring-cyan-500/30 border border-cyan-500/20">
+        <div className="flex items-center gap-2 mb-4">
+          <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
+          <span className="text-xs text-cyan-400 uppercase tracking-widest font-semibold">● DATA VAULT ●</span>
+        </div>
         <h2 className="font-orbitron text-2xl font-semibold mb-4 text-cyan-200 uppercase tracking-[0.18em]">
-          HUNTER ARCHIVES
+          SYSTEM RECORDS
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <div className="bg-zinc-800 p-6 rounded-xl">
-            <div className="text-xs text-zinc-400 uppercase mb-3 tracking-widest font-semibold">Total XP Earned</div>
+          <div className="bg-zinc-800/60 p-6 rounded-xl border border-cyan-500/20 shadow-md shadow-cyan-500/10">
+            <div className="text-xs text-zinc-500 uppercase mb-3 tracking-widest font-semibold">Total XP Earned</div>
             <div className={`text-5xl font-extrabold ${theme.highlight} leading-none drop-shadow-md`}>{totalXPEarned}</div>
           </div>
 
-          <div className="bg-zinc-800 p-6 rounded-xl">
-            <div className="text-xs text-zinc-400 uppercase mb-3 tracking-widest font-semibold">Quests Completed</div>
+          <div className="bg-zinc-800/60 p-6 rounded-xl border border-cyan-500/20 shadow-md shadow-cyan-500/10">
+            <div className="text-xs text-zinc-500 uppercase mb-3 tracking-widest font-semibold">Objectives Cleared</div>
             <div className={`text-5xl font-extrabold ${theme.highlight} leading-none drop-shadow-md`}>{questsCompleted}</div>
           </div>
 
-          <div className="bg-zinc-800 p-6 rounded-xl">
-            <div className="text-xs text-zinc-400 uppercase mb-3 tracking-widest font-semibold">Longest Streak</div>
+          <div className="bg-zinc-800/60 p-6 rounded-xl border border-cyan-500/20 shadow-md shadow-cyan-500/10">
+            <div className="text-xs text-zinc-500 uppercase mb-3 tracking-widest font-semibold">Longest Streak</div>
             <div className={`text-5xl font-extrabold ${theme.highlight} leading-none drop-shadow-md`}>{longestStreak}</div>
           </div>
 
-          <div className="bg-zinc-800 p-6 rounded-xl">
-            <div className="text-xs text-zinc-400 uppercase mb-3 tracking-widest font-semibold">Highest Rank Achieved</div>
+          <div className="bg-zinc-800/60 p-6 rounded-xl border border-cyan-500/20 shadow-md shadow-cyan-500/10">
+            <div className="text-xs text-zinc-500 uppercase mb-3 tracking-widest font-semibold">Peak Rank</div>
             <div className={`text-5xl font-extrabold ${theme.highlight} leading-none drop-shadow-md`}>{highestRank}</div>
           </div>
 
-          <div className="bg-zinc-800 p-6 rounded-xl">
-            <div className="text-xs text-zinc-400 uppercase mb-3 tracking-widest font-semibold">Days Active</div>
+          <div className="bg-zinc-800/60 p-6 rounded-xl border border-cyan-500/20 shadow-md shadow-cyan-500/10">
+            <div className="text-xs text-zinc-500 uppercase mb-3 tracking-widest font-semibold">Active Days</div>
             <div className={`text-5xl font-extrabold ${theme.highlight} leading-none drop-shadow-md`}>{daysActive}</div>
           </div>
         </div>
