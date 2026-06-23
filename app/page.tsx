@@ -602,8 +602,8 @@ function quickAddQuest(name: string, stat: StatKey, xp: number) {
 
       {/* ADD QUEST */}
 <div className="bg-zinc-900 p-6 rounded-2xl mb-6">
-  <h2 className="font-orbitron text-2xl font-semibold mb-4 text-cyan-300">
-    Add Quest
+  <h2 className="font-orbitron text-2xl font-semibold mb-4 text-cyan-200 uppercase tracking-[0.18em]">
+    [SYSTEM] ADD MISSION
   </h2>
 
   <div className="flex flex-col gap-4">
@@ -678,8 +678,8 @@ function quickAddQuest(name: string, stat: StatKey, xp: number) {
       </div>
 
       <div className="bg-zinc-900 p-6 rounded-2xl mb-6">
-        <h2 className="font-orbitron text-2xl font-semibold mb-4 text-cyan-300">
-          Daily Quests
+        <h2 className="font-orbitron text-2xl font-semibold mb-4 text-cyan-200 uppercase tracking-[0.18em]">
+          [SYSTEM] ACTIVE MISSIONS
         </h2>
 
         {quests.length === 0 ? (
@@ -721,8 +721,8 @@ function quickAddQuest(name: string, stat: StatKey, xp: number) {
 
       {/* STATS */}
       <div className="bg-zinc-900 p-6 rounded-2xl">
-        <h2 className="font-orbitron text-2xl font-semibold mb-4 text-cyan-300">
-          Stats
+        <h2 className="font-orbitron text-2xl font-semibold mb-4 text-cyan-200 uppercase tracking-[0.18em]">
+          [SYSTEM] CHARACTER STATS
         </h2>
 
         <div className="grid grid-cols-2 gap-4">
@@ -746,8 +746,8 @@ function quickAddQuest(name: string, stat: StatKey, xp: number) {
 
       {/* HUNTER RECORDS */}
       <div className="bg-zinc-900 p-6 rounded-2xl mt-6">
-        <h2 className="font-orbitron text-2xl font-semibold mb-4 text-cyan-300">
-          HUNTER ARCHIVES
+        <h2 className="font-orbitron text-2xl font-semibold mb-4 text-cyan-200 uppercase tracking-[0.18em]">
+          [SYSTEM] HUNTER ARCHIVES
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
