@@ -29,6 +29,12 @@ export default function Home() {
   });
 
   const [quests, setQuests] = useState<Quest[]>([]);
+  const [coreQuests, setCoreQuests] = useState<Quest[]>([]);
+
+  const coreMissionDefaults: Quest[] = [
+    { name: "Academics", xp: 20, stat: "INT", completed: false },
+    { name: "Training", xp: 20, stat: "STR", completed: false },
+  ];
 
   const [newQuestName, setNewQuestName] = useState("");
   const [newQuestXp, setNewQuestXp] = useState("");
@@ -209,8 +215,10 @@ export default function Home() {
     const savedQuestsCompleted = localStorage.getItem("questsCompleted");
     const savedLongestStreak = localStorage.getItem("longestStreak");
     const savedHighestRank = localStorage.getItem("highestRank");
+    const savedCoreQuests = localStorage.getItem("coreQuests");
 
     let initialQuests: Quest[] = [];
+    let initialCoreQuests: Quest[] = [];
     let initialStreak = savedStreak ? Number(savedStreak) : 0;
     let initialLastCompleted = savedLastCompletedDate || "";
     let initialDaysActive = savedDaysActive ? Number(savedDaysActive) : 0;
@@ -236,18 +244,25 @@ export default function Home() {
 
     // Daily Reset: Clear all quests at the start of a new day
     if (savedLastResetDate && savedLastResetDate !== today) {
-      // New day detected - remove all quests completely
+      // New day detected - remove all daily quests and reset core missions
       initialQuests = [];
+      initialCoreQuests = coreMissionDefaults.map((q) => ({ ...q, completed: false }));
       localStorage.setItem("lastResetDate", today);
       // Preserve XP, Stats, Power, Rank, Hunter Title, Streak, Notifications
     } else if (!savedLastResetDate) {
       // First time setup
+      initialCoreQuests = coreMissionDefaults.map((q) => ({ ...q, completed: false }));
       localStorage.setItem("lastResetDate", today);
     } else {
       // Same day - restore existing quests from localStorage
       const savedQuests = localStorage.getItem("quests");
       if (savedQuests) {
         initialQuests = JSON.parse(savedQuests);
+      }
+      if (savedCoreQuests) {
+        initialCoreQuests = JSON.parse(savedCoreQuests);
+      } else {
+        initialCoreQuests = coreMissionDefaults.map((q) => ({ ...q, completed: false }));
       }
     }
 
@@ -258,6 +273,7 @@ export default function Home() {
     }
 
     setQuests(initialQuests);
+    setCoreQuests(initialCoreQuests);
 
     if (savedXp) {
       setXp(Number(savedXp));
@@ -273,6 +289,7 @@ export default function Home() {
 
   useEffect(() => {
     localStorage.setItem("quests", JSON.stringify(quests));
+    localStorage.setItem("coreQuests", JSON.stringify(coreQuests));
     localStorage.setItem("xp", xp.toString());
     localStorage.setItem("stats", JSON.stringify(stats));
     localStorage.setItem("streak", streak.toString());
@@ -283,7 +300,7 @@ export default function Home() {
     localStorage.setItem("highestRank", highestRank);
     localStorage.setItem("daysActive", daysActive.toString());
     localStorage.setItem("lastActiveDate", lastActiveDate);
-  }, [quests, xp, stats, streak, lastCompletedDate, totalXPEarned, questsCompleted, longestStreak, highestRank, daysActive, lastActiveDate]);
+  }, [quests, coreQuests, xp, stats, streak, lastCompletedDate, totalXPEarned, questsCompleted, longestStreak, highestRank, daysActive, lastActiveDate]);
 
   function pushNotification(message: string) {
     const id = Date.now() + Math.floor(Math.random() * 1000);
@@ -319,64 +336,73 @@ export default function Home() {
     );
   }
 
-  function completeQuest(index: number) {
-    console.log("clicked", index);
+  function awardQuestReward(
+    quest: Quest,
+    updatedQuests: Quest[],
+    index: number,
+    setQuestList: (quests: Quest[]) => void
+  ) {
+    const newXp = xp + quest.xp;
+    const prevLevel = Math.floor(xp / maxXp) + 1;
+    const newLevel = Math.floor(newXp / maxXp) + 1;
 
+    const newStats = {
+      ...stats,
+      [quest.stat]: stats[quest.stat] + 1,
+    } as Record<StatKey, number>;
+
+    const prevPower = stats.STR + stats.INT + stats.DISC + stats.ENG;
+    const newPower = newStats.STR + newStats.INT + newStats.DISC + newStats.ENG;
+    const prevRank = getRank(prevPower);
+    const newRank = getRank(newPower);
+    const newTotalXPEarned = totalXPEarned + quest.xp;
+    const newQuestsCompleted = questsCompleted + 1;
+    const today = new Date().toISOString().split("T")[0];
+    const yesterday = new Date(Date.now() - 86400000).toISOString().split("T")[0];
+    const newStreakValue =
+      lastCompletedDate === today
+        ? streak
+        : lastCompletedDate === yesterday
+        ? streak + 1
+        : 1;
+    const newHighestRank = getHighestRank(newRank, highestRank);
+
+    updatedQuests[index].completed = true;
+    setXp(newXp);
+    setStats(newStats);
+    setTotalXPEarned(newTotalXPEarned);
+    setQuestsCompleted(newQuestsCompleted);
+    setStreak(newStreakValue);
+    setLongestStreak((prev) => Math.max(prev, newStreakValue));
+    setHighestRank(newHighestRank);
+    setLastCompletedDate(today);
+    setQuestList(updatedQuests);
+
+    pushNotification(`[SYSTEM] Quest completed: ${quest.name} (+${quest.xp} XP)`);
+    pushNotification(`[SYSTEM] ${quest.stat} has increased by 1`);
+
+    if (newLevel > prevLevel) {
+      pushNotification(`[SYSTEM] Level Up! Lv ${prevLevel} → Lv ${newLevel}`);
+    }
+
+    if (newRank !== prevRank) {
+      pushNotification(`[SYSTEM] Rank Up! ${prevRank} → ${newRank}`);
+    }
+  }
+
+  function completeQuest(index: number) {
     const updatedQuests = [...quests];
 
     if (!updatedQuests[index].completed) {
-      const quest = updatedQuests[index];
+      awardQuestReward(quests[index], updatedQuests, index, setQuests);
+    }
+  }
 
-      // compute new xp and stats for notifications and logic
-      const newXp = xp + quest.xp;
-      const prevLevel = Math.floor(xp / maxXp) + 1;
-      const newLevel = Math.floor(newXp / maxXp) + 1;
+  function completeCoreQuest(index: number) {
+    const updatedQuests = [...coreQuests];
 
-      const newStats = {
-        ...stats,
-        [quest.stat]: stats[quest.stat] + 1,
-      } as Record<StatKey, number>;
-
-      const prevPower = stats.STR + stats.INT + stats.DISC + stats.ENG;
-      const newPower = newStats.STR + newStats.INT + newStats.DISC + newStats.ENG;
-      const prevRank = getRank(prevPower);
-      const newRank = getRank(newPower);
-      const newTotalXPEarned = totalXPEarned + quest.xp;
-      const newQuestsCompleted = questsCompleted + 1;
-      const today = new Date().toISOString().split("T")[0];
-      const yesterday = new Date(Date.now() - 86400000).toISOString().split("T")[0];
-      const newStreakValue =
-        lastCompletedDate === today
-          ? streak
-          : lastCompletedDate === yesterday
-          ? streak + 1
-          : 1;
-      const newHighestRank = getHighestRank(newRank, highestRank);
-
-      // apply updates
-      updatedQuests[index].completed = true;
-      setXp(newXp);
-      setStats(newStats);
-      setTotalXPEarned(newTotalXPEarned);
-      setQuestsCompleted(newQuestsCompleted);
-      setStreak(newStreakValue);
-      setLongestStreak((prev) => Math.max(prev, newStreakValue));
-      setHighestRank(newHighestRank);
-      setLastCompletedDate(today);
-
-      setQuests(updatedQuests);
-
-      // Notifications
-      pushNotification(`[SYSTEM] Quest completed: ${quest.name} (+${quest.xp} XP)`);
-      pushNotification(`[SYSTEM] ${quest.stat} has increased by 1`);
-
-      if (newLevel > prevLevel) {
-        pushNotification(`[SYSTEM] Level Up! Lv ${prevLevel} → Lv ${newLevel}`);
-      }
-
-      if (newRank !== prevRank) {
-        pushNotification(`[SYSTEM] Rank Up! ${prevRank} → ${newRank}`);
-      }
+    if (!updatedQuests[index].completed) {
+      awardQuestReward(coreQuests[index], updatedQuests, index, setCoreQuests);
     }
   }
 
@@ -477,6 +503,7 @@ function quickAddQuest(name: string, stat: StatKey, xp: number) {
   });
 
   setQuests([]);
+  setCoreQuests(coreMissionDefaults.map((q) => ({ ...q, completed: false })));
 }
 
   return (
@@ -618,6 +645,35 @@ function quickAddQuest(name: string, stat: StatKey, xp: number) {
 
 
       {/* QUESTS */}
+      <div className="bg-zinc-900 p-6 rounded-2xl mb-6">
+        <h2 className="text-2xl font-semibold mb-2 text-cyan-300">
+          Core Missions
+        </h2>
+        <p className="text-zinc-400 text-sm mb-4">Core Missions reset every day and cannot be removed.</p>
+
+        {coreQuests.length === 0 ? (
+          <p className="text-zinc-400">Loading core missions...</p>
+        ) : (
+          <div className="space-y-3">
+            {coreQuests.map((quest, index) => (
+              <button
+                key={index}
+                onClick={() => completeCoreQuest(index)}
+                disabled={quest.completed}
+                className={`w-full text-left p-4 rounded-xl transition-colors ${
+                  quest.completed
+                    ? "bg-green-700"
+                    : `bg-zinc-800 ${theme.buttonHover}`
+                }`}
+              >
+                {quest.completed ? "✓ " : ""}
+                {quest.name} (+{quest.xp} XP)
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
       <div className="bg-zinc-900 p-6 rounded-2xl mb-6">
         <h2 className="text-2xl font-semibold mb-4 text-cyan-300">
           Daily Quests
