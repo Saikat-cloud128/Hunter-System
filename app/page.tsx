@@ -517,7 +517,7 @@ function quickAddQuest(name: string, stat: StatKey, xp: number) {
           <NotificationItem key={n.id} id={n.id} message={n.message} themeData={theme} />
         ))}
       </div>
-      <h1 className="text-5xl font-bold text-cyan-400 mb-2">
+      <h1 className="font-orbitron text-5xl font-bold text-cyan-400 mb-2">
         HUNTER SYSTEM
       </h1>
 
@@ -530,8 +530,8 @@ function quickAddQuest(name: string, stat: StatKey, xp: number) {
           <div className="flex items-start justify-between gap-6">
             <div className="flex items-center gap-4">
               <div className={`px-4 py-3 rounded-xl bg-black/30 border ${theme.border} border-opacity-30`}>
-                <div className="text-xs text-zinc-300 uppercase">Rank</div>
-                <div className={`text-2xl font-extrabold ${theme.accent} tracking-wide`}>{rank}</div>
+                <div className="font-orbitron text-xs text-zinc-300 uppercase">Rank</div>
+                <div className={`font-orbitron text-2xl font-extrabold ${theme.accent} tracking-wide`}>{rank}</div>
               </div>
 
               <div>
@@ -565,7 +565,7 @@ function quickAddQuest(name: string, stat: StatKey, xp: number) {
 
       {/* QUICK ADD */}
       <div className="bg-zinc-900 p-6 rounded-2xl mb-6">
-        <h2 className="text-2xl font-semibold mb-4 text-cyan-300">
+        <h2 className="font-orbitron text-2xl font-semibold mb-4 text-cyan-300">
           Quick Add
         </h2>
 
@@ -602,7 +602,7 @@ function quickAddQuest(name: string, stat: StatKey, xp: number) {
 
       {/* ADD QUEST */}
 <div className="bg-zinc-900 p-6 rounded-2xl mb-6">
-  <h2 className="text-2xl font-semibold mb-4 text-cyan-300">
+  <h2 className="font-orbitron text-2xl font-semibold mb-4 text-cyan-300">
     Add Quest
   </h2>
 
@@ -649,7 +649,7 @@ function quickAddQuest(name: string, stat: StatKey, xp: number) {
 
       {/* QUESTS */}
       <div className="bg-zinc-900 p-6 rounded-2xl mb-6">
-        <h2 className="text-2xl font-semibold mb-2 text-cyan-300">
+        <h2 className="font-orbitron text-2xl font-semibold mb-2 text-cyan-300">
           Core Missions
         </h2>
         <p className="text-zinc-400 text-sm mb-4">Core Missions reset every day and cannot be removed.</p>
@@ -678,7 +678,7 @@ function quickAddQuest(name: string, stat: StatKey, xp: number) {
       </div>
 
       <div className="bg-zinc-900 p-6 rounded-2xl mb-6">
-        <h2 className="text-2xl font-semibold mb-4 text-cyan-300">
+        <h2 className="font-orbitron text-2xl font-semibold mb-4 text-cyan-300">
           Daily Quests
         </h2>
 
@@ -721,7 +721,7 @@ function quickAddQuest(name: string, stat: StatKey, xp: number) {
 
       {/* STATS */}
       <div className="bg-zinc-900 p-6 rounded-2xl">
-        <h2 className="text-2xl font-semibold mb-4 text-cyan-300">
+        <h2 className="font-orbitron text-2xl font-semibold mb-4 text-cyan-300">
           Stats
         </h2>
 
@@ -746,7 +746,7 @@ function quickAddQuest(name: string, stat: StatKey, xp: number) {
 
       {/* HUNTER RECORDS */}
       <div className="bg-zinc-900 p-6 rounded-2xl mt-6">
-        <h2 className="text-2xl font-semibold mb-4 text-cyan-300">
+        <h2 className="font-orbitron text-2xl font-semibold mb-4 text-cyan-300">
           Hunter Records
         </h2>
 
